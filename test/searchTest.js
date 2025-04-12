@@ -6,8 +6,20 @@ import {countGroups} from "./searchResponseUtils.js";
 
 
 function getQueryUrl(paramMap){
-  const url = process.env.API_ROOT + '/searchEvents';
+  let url = process.env.API_ROOT + '/searchEvents';
 
+  if (paramMap && Object.keys(paramMap).length >0) {
+    let queryString = "?"
+
+    let params = [];
+    Object.keys(paramMap).forEach(function(param){
+      params.push(param+"="+paramMap[param])
+    })
+    queryString += params.join("&");
+    url+=queryString;
+
+  }
+  console.log(url);
   return url;
 }
 describe('"Event search tests', () => {
@@ -24,6 +36,42 @@ describe('"Event search tests', () => {
 
   it("Test search returns correct result when city and day are parameters", async()=>{
 
+    const city = "Alexandria";
+    const day = "Monday"
+    const url = getQueryUrl({
+      city: city,
+      day: day
+    })
+    const response = await fetch(url)
+    assert.strictEqual(response.status,200,response.status);
+
+    const result = await response.json();
+    assert.strictEqual(countGroups(result) > 0, true);
+
+    const groups = result.groupData;
+    Object.keys(groups).forEach(function(groupId){
+      const group = groups[groupId];
+
+      if(group.events){
+        Object.keys(group.events).forEach(function(eventId){
+          const eventLocation = group.events[eventId].location;
+
+          const validGroup = eventLocation && eventLocation.length > 0 ?
+            eventLocation.split(',')[1].trim() === city:
+            group.cities.includes(city)
+
+          console.log("City:"+city);
+          console.log("Event location:"+eventLocation.length)
+          console.log(group.cities)
+          assert.strictEqual(validGroup, true);
+        })
+      }
+
+    })
+  })
+
+
+  it("Test search returns bad request error result when city and day are parameters", async()=>{
     const url = getQueryUrl({
       city: "Alexandria",
       day: "Monday"
@@ -33,7 +81,6 @@ describe('"Event search tests', () => {
 
     const result = await response.json();
     assert.strictEqual(countGroups(result) > 0, true);
-
   })
 
   /**
