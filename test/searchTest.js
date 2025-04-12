@@ -19,7 +19,6 @@ function getQueryUrl(paramMap){
     url+=queryString;
 
   }
-  console.log(url);
   return url;
 }
 describe('"Event search tests', () => {
@@ -60,9 +59,6 @@ describe('"Event search tests', () => {
             eventLocation.split(',')[1].trim() === city:
             group.cities.includes(city)
 
-          console.log("City:"+city);
-          console.log("Event location:"+eventLocation.length)
-          console.log(group.cities)
           assert.strictEqual(validGroup, true);
         })
       }
@@ -71,24 +67,14 @@ describe('"Event search tests', () => {
   })
 
 
-  it("Test search returns bad request error result when city and day are parameters", async()=>{
+  it("Test search returns bad request error result when city and invalid option for day are parameters", async()=>{
     const url = getQueryUrl({
       city: "Alexandria",
-      day: "Monday"
+      day: "Test"
     })
     const response = await fetch(url)
-    assert.strictEqual(response.status,200,response.status);
-
-    const result = await response.json();
-    assert.strictEqual(countGroups(result) > 0, true);
+    assert.strictEqual(response.status,400,response.status);
   })
-
-  /**
-   * TODO
-   * - Verify correct status and response are set when the user tries to submit a query with an invalid day.
-   *
-   * Do not duplicate integration tests in API. Consider moving them to API tests.
-   */
 
 });
 
