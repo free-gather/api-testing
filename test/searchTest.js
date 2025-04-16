@@ -5,7 +5,7 @@ import 'dotenv/config';
 import {countGroups} from "./searchResponseUtils.js";
 
 
-function getQueryUrl(paramMap){
+function getEventSearchUrl(paramMap){
   let url = process.env.API_ROOT + '/searchEvents';
 
   if (paramMap && Object.keys(paramMap).length >0) {
@@ -21,11 +21,16 @@ function getQueryUrl(paramMap){
   }
   return url;
 }
+
+function getLocationSearchUrl(){
+  return process.env.API_ROOT + '/searchLocations'
+}
+
 describe('"Event search tests', () => {
 
-  it("Test search returns results",async ()=>{
+  it("Test event search returns results",async ()=>{
 
-    const response = await fetch(getQueryUrl())
+    const response = await fetch(getEventSearchUrl())
     assert.strictEqual(response.status,200,response.status);
 
     const result = await response.json();
@@ -33,11 +38,11 @@ describe('"Event search tests', () => {
 
   })
 
-  it("Test search returns correct result when city and day are parameters", async()=>{
+  it("Test event search returns correct result when city and day are parameters", async()=>{
 
     const city = "Alexandria";
     const day = "Monday"
-    const url = getQueryUrl({
+    const url = getEventSearchUrl({
       city: city,
       day: day
     })
@@ -68,7 +73,7 @@ describe('"Event search tests', () => {
 
 
   it("Test search returns bad request error result when city and invalid option for day are parameters", async()=>{
-    const url = getQueryUrl({
+    const url = getEventSearchUrl({
       city: "Alexandria",
       day: "Test"
     })
@@ -77,4 +82,20 @@ describe('"Event search tests', () => {
   })
 
 });
+
+describe("Location search tests,",()=>{
+  it("Test location search returns correct results", async()=>{
+    const url = getLocationSearchUrl();
+    const response = await fetch(url);
+
+    assert.strictEqual(response.status,200,response.status);
+
+    const result = await response.json();
+
+    console.log("Location search result:"+JSON.stringify(response))
+    assert.strictEqual(Object.keys(result.conventions).length >= 0 , true);
+    assert.strictEqual(Object.keys(result.gameRestaurants).length >= 0, true);
+    assert.strictEqual(Object.keys(result.gameStores).length >= 0, true);
+  })
+})
 
