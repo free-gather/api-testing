@@ -26,6 +26,7 @@ function getLocationSearchUrl(){
   return process.env.API_ROOT + '/searchLocations'
 }
 
+
 describe('"Event search tests', () => {
 
   it("Test event search returns results",async ()=>{
@@ -79,6 +80,18 @@ describe('"Event search tests', () => {
     })
     const response = await fetch(url)
     assert.strictEqual(response.status,400,response.status);
+  })
+
+
+  it("Test search returns no results when invalid location tag is parameter", async()=>{
+    const url = getEventSearchUrl({
+      area: "Antarctica"
+    })
+    const response = await fetch(url)
+    assert.strictEqual(response.status,200,response.status);
+
+    const result = await response.json();
+    assert.strictEqual(countGroups(result), 0);
   })
 
 });
