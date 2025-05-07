@@ -26,4 +26,12 @@ describe("City list tests",()=>{
     const result = await response.json();
     assert.strictEqual(result.length, 0);
   })
+
+  it("Test city list endpoint returns  results when valid location group is used", async()=>{
+    const response = await fetch(getCityListUrl("dmv"));
+    assert.strictEqual(response.status,200, response.status);
+
+    const result = await response.json();
+    assert.strictEqual(result.length > 0, true);
+  })
 })
