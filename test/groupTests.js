@@ -19,7 +19,7 @@ describe('Group data tests', ()=>{
   it('Test group is returned when a valid name and valid area are parameters', async()=>{
     const response = await fetch(getGroupDataUrl({
       name: 'Alexandria_Board_Game_Group',
-      arae: 'dmv'
+      area: 'dmv'
     }))
 
     assert.strictEqual(response.status, 200, response.status);

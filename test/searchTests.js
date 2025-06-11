@@ -101,7 +101,7 @@ describe("Location search tests,",()=>{
     const url = getLocationSearchUrl();
     const response = await fetch(url);
 
-    assert.strictEqual(response.status,200,response.status);
+    assert.strictEqual(response.status,200,response.status+ " "+response.statusText);
 
     const result = await response.json();
 
