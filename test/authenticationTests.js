@@ -4,7 +4,7 @@ import assert from "node:assert";
 import 'dotenv/config';
 
 function getRegisterUserUrl(){
-  let url = process.env.API_ROOT + '/user/register';
+  let url = process.env.API_ROOT + '/users/register';
   return url;
 }
 
